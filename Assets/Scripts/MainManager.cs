@@ -11,7 +11,11 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public int bestScoreNum;
+    public Text bestScore;
     public GameObject GameOverText;
+    private string nickName;
+    private GameManager gameManager;
     
     private bool m_Started = false;
     private int m_Points;
@@ -24,6 +28,9 @@ public class MainManager : MonoBehaviour
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        bestScore.text = gameManager.bestScore.text;
+        nickName = gameManager.nickName;
         
         int[] pointCountArray = new [] {1,1,2,2,5,5};
         for (int i = 0; i < LineCount; ++i)
@@ -58,6 +65,7 @@ public class MainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
             }
         }
     }
@@ -70,7 +78,21 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+
+        if (m_Points > bestScoreNum)
+        {
+            bestScoreNum = m_Points;
+            bestScore.text = $"Score : {bestScoreNum} {nickName}";
+            gameManager.bestScore.text = bestScore.text;
+            gameManager.bestScoreNum = bestScoreNum;
+        }
+
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    public void backToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }
